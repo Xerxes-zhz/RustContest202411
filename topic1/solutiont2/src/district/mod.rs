@@ -6,6 +6,7 @@ use std::env::current_dir;
 use std::fs::File;
 use std::io::Read;
 use std::path::PathBuf;
+
 fn json_read(path: PathBuf) -> String {
     let mut file = File::open(path).expect("can't open file");
     let mut json_str = String::new();
