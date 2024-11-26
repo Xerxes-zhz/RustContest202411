@@ -1,3 +1,4 @@
+
 // src/tests.rs
 mod count_distinct;
 
@@ -12,6 +13,7 @@ mod tests {
         ("a,b,c,好,好,爱", 5),
         ("a,b,c,0,e,cd", 6),
     ];
+
     // 定义一个测试函数来验证每个测试用例
     #[test]
     fn test_count() {
@@ -26,3 +28,4 @@ mod tests {
         assert_eq!(100.00, total_score);
     }
 }
+    

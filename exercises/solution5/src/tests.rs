@@ -1,6 +1,7 @@
 
 // src/tests.rs
 mod fibnacci;
+
 #[cfg(test)]
 mod tests {
     use super::fibnacci::odd_fibnacci_sum;
@@ -26,3 +27,4 @@ mod tests {
         assert_eq!(100.00, total_score);
     }
 }
+    
