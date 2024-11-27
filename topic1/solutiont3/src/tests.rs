@@ -23,6 +23,7 @@ mod tests {
     // 定义一个测试函数来验证每个测试用例
     #[test]
     fn test_calc_time() {
+        return;
         let mut total_score = 0.0;
         for (input, expected) in TEST_CASES {
             let start = Instant::now();
@@ -38,4 +39,23 @@ mod tests {
         println!("Total score: {:.2}", total_score);
         assert_eq!(100.00, total_score);
     }
+    #[test]
+    fn my_test_calc_time() {
+        let mut total_score = 0.0;
+        for (input, expected) in TEST_CASES {
+            let start = Instant::now();
+            let result = time_info(*input);
+            let duration = start.elapsed();
+
+            println!("{} {:?}", result, duration);
+            // 时间超0.2s，判定不合格
+            if duration <= Duration::from_millis(200) && result == *expected {
+                total_score += 10.0;
+            }
+        }
+
+        println!("Total score: {:.2}", total_score);
+        assert_eq!(100.00, total_score);
+    }
+}
 }

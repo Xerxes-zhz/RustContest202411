@@ -1,5 +1,7 @@
 use std::cmp::max;
 pub fn goldbach_conjecture() -> u64 {
+    // 按动态增长的方式设计的算法
+    // 每次检查(2^i,2^(i+1)]内是否有解
     let mut num: Vec<bool> = vec![false, false, true];
     let mut primes: Vec<usize> = vec![2];
     let mut left_o: usize = 3; // 动态区间左开
