@@ -69,17 +69,17 @@ impl RetirementInfo {
 struct RetirementRule {
     female_default_age: u32,
     male_default_age: u32,
-    
 }
 pub fn retire_time(time: &str, tp: &str) -> String {
+    todo!()
     // 解析部分使用正则而非字符串解析是出于后续改动尽可能小的题目要求
     // 正则表达式更符合通常意义的生产需求
     // 同样的原因用once_cell动态编译了正则规则
 
-    if let Some(retirement_info) = RetirementInfo::from(time, tp) {
-        println!("{:?}", retirement_info);
-    } else {
-        panic!("信息规则错误, 需要调整适应新规则");
-    };
-    "".to_string()
+    // if let Some(retirement_info) = RetirementInfo::from(time, tp) {
+    //     println!("{:?}", retirement_info);
+    // } else {
+    //     panic!("信息规则错误, 需要调整适应新规则");
+    // };
+    // "".to_string()
 }
