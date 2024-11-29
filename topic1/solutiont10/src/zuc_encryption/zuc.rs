@@ -21,13 +21,13 @@ fn l1(x: u32) -> u32 {
 fn l2(x: u32) -> u32 {
     x ^ x.rotate_left(8) ^ x.rotate_left(14) ^ x.rotate_left(22) ^ x.rotate_left(30)
 }
-// fn padding_input(input:&[u8])->Vec<u8> {
-//     let mut input = input.to_vec();
-//     const BLOCK_SIZE: usize = 4;
-//     let p_size = BLOCK_SIZE - (input.len() % BLOCK_SIZE);
-//     input.extend(vec![p_size as u8; p_size]);
-//     input 
-// }
+fn padding_input(input:&[u8])->Vec<u8> {
+    let mut input = input.to_vec();
+    const BLOCK_SIZE: usize = 4;
+    let p_size = BLOCK_SIZE - (input.len() % BLOCK_SIZE);
+    input.extend(vec![p_size as u8; p_size]);
+    input 
+}
 pub struct ZUC {
     state: [u32; 16],
     offset: usize,
@@ -103,7 +103,7 @@ impl ZUC {
     }
     pub fn encrypt(&mut self, input: String) -> Vec<u8> {
         let bytes = input.as_bytes();
-        // let bytes = padding_input(&mut bytes);
+        let bytes = padding_input(&bytes);
         bytes
             .chunks_exact(4)
             .map(|chunk| u32::from_be_bytes([chunk[0], chunk[1], chunk[2], chunk[3]]))
