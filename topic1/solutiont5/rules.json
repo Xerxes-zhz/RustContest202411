@@ -1,0 +1,28 @@
+{
+  "default": {
+    "Male": 60,
+    "Female": null
+  },
+  "start_year":2025,
+  "start_month":1,
+  "rules": [
+    {
+      "gender": "Male",
+      "age": 60,
+      "delay_per_month": 0.25,
+      "max_age":63
+    },
+    {
+      "gender": "Female",
+      "age": 55,
+      "delay_per_month": 0.25,
+      "max_age":58
+    },
+    {
+      "gender": "Female",
+      "age": 50,
+      "delay_per_month": 0.5,
+      "max_age":55
+    }
+  ]
+}
