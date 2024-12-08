@@ -1,12 +1,36 @@
 use std::ptr;
-#[warn(unused_variables)]
-pub fn allocate(size: usize) -> *mut u8 {
-    // 从自由链表中查找适合的块
-    // 如果没有足够的块，则返回空指针
-    ptr::null_mut()
+pub struct FreeList {
+    head: *mut Node,
 }
 
-#[warn(unused_variables)]
-pub fn deallocate(ptr: *mut u8, size: usize) {
-    // 将块标记为空闲并插入自由链表
+struct Node {
+    next: *mut Node,
+}
+
+impl FreeList {
+    pub fn new() -> Self {
+        Self {
+            head: ptr::null_mut(),
+        }
+    }
+
+    pub fn push(&mut self, ptr: *mut u8) {
+        unsafe {
+            let node = ptr as *mut Node;
+            (*node).next = self.head;
+            self.head = node;
+        }
+    }
+
+    pub fn pop(&mut self) -> Option<*mut u8> {
+        if self.head.is_null() {
+            None
+        } else {
+            unsafe {
+                let node = self.head;
+                self.head = (*node).next;
+                Some(node as *mut u8)
+            }
+        }
+    }
 }
