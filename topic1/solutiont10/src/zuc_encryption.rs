@@ -5,6 +5,9 @@ mod zuc;
 use data::{IV, KEY};
 use zuc::ZUC;
 pub fn encryption(input: String) -> String {
+    // 实现仅用u32的zuc
+    // 使用循环队列来存储LFSR
+    // 实现了Iterator来返回密钥流
     let mut zuc = ZUC::new(&KEY, &IV);
     zuc.init();
     let s = zuc.encrypt(input);

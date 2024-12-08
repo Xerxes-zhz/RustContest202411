@@ -34,6 +34,7 @@ fn check_id_mod_11_2(id_card_no: &str) -> bool {
     sum % 11 == 1
 }
 pub fn check_id_card(id_card_no: &str) -> String {
+    // 分情况讨论
     let data_json_path = current_dir().unwrap().join("data.json");
     let file = fs::read_to_string(data_json_path).unwrap();
     let id_card_map: HashMap<String, IDCard> = serde_json::from_str(&file).unwrap();
@@ -43,6 +44,7 @@ pub fn check_id_card(id_card_no: &str) -> String {
     let mut d = "";
     let id_card: Option<&IDCard> = {
         if id_card_no.len() == 18 {
+            // 校验码
             if check_id_mod_11_2(id_card_no) {
                 if &id_card_no.chars().nth(16).unwrap().to_digit(10).unwrap() % 2 == 1 {
                     gender = "男";
@@ -58,6 +60,7 @@ pub fn check_id_card(id_card_no: &str) -> String {
             if &id_card_no.chars().nth(14).unwrap().to_digit(10).unwrap() % 2 == 1 {
                 gender = "男";
             }
+            // 15位19开头
             y = "19".to_string();
             y.push_str(&id_card_no[6..8]);
             m = &id_card_no[8..10];

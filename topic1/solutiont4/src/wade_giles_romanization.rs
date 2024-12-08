@@ -1,24 +1,13 @@
-use serde::Deserialize;
 use std::collections::HashMap;
-use std::env::current_dir;
-use std::fs::File;
-use std::io::Read;
-use std::path::PathBuf;
+mod json_io;
+use json_io::json_parse_from_current_dir;
 mod trie;
 use trie::Trie;
 fn remove_tone_numbers(pinyin_with_tone: &str) -> String {
-    // 定义数字字符，用于去掉拼音中的音调数字
     pinyin_with_tone
         .chars()
-        .filter(|ch| !ch.is_ascii_digit()) // 过滤掉 ASCII 数字
+        .filter(|ch| !ch.is_ascii_digit())
         .collect()
-}
-// 定义 JSON 数据对应的结构体
-#[derive(Debug, Deserialize)]
-struct PinyinData {
-    // 动态键值对，键是中文词语，值是拼音列表
-    #[serde(flatten)]
-    entries: HashMap<String, Vec<String>>,
 }
 
 fn capitalize_first_letter(input: &str) -> String {
@@ -29,51 +18,39 @@ fn capitalize_first_letter(input: &str) -> String {
     }
 }
 
-fn json_read(path: PathBuf) -> String {
-    let mut file = File::open(path).expect("can't open file");
-    let mut json_str = String::new();
-    let _ = file.read_to_string(&mut json_str);
-    json_str
-}
 pub fn converter(input: &str) -> String {
-    //path
-    let phrases_path = current_dir().unwrap().join("phrases.json");
-    let tone_path = current_dir().unwrap().join("tone.json");
-    let wade_giles_path = current_dir().unwrap().join("wade_giles.json");
-    let pinyin_path = current_dir().unwrap().join("pinyin.json");
+    // 基于前缀树实现分词
+    // 
+    let pinyin_map: HashMap<u32, String> = json_parse_from_current_dir("pinyin.json");
+    let tone_map: HashMap<String, String> = json_parse_from_current_dir("tone.json");
+    let phrases_data: HashMap<String, Vec<String>> = json_parse_from_current_dir("phrases.json");
+    let wade_giles_map: HashMap<String, String> = json_parse_from_current_dir("wade_giles.json");
 
-    // json
-    let phrases_json = json_read(phrases_path);
-    let tone_json = json_read(tone_path);
-    let wade_giles_json = json_read(wade_giles_path);
-    let pinyin_json = json_read(pinyin_path);
-
-    let pinyin_map: HashMap<u32, String> =
-        serde_json::from_str(&pinyin_json).expect("parse json failed");
+    // 单字
     let word_pinyin_map: HashMap<u32, String> = pinyin_map
         .into_iter()
         .map(|(unicode, pinyin)| (unicode, pinyin.split(",").nth(0).map(String::from).unwrap()))
         .collect();
-    let tone_map: HashMap<String, String> =
-        serde_json::from_str(&tone_json).expect("parse json failed");
-    let data: PinyinData = serde_json::from_str(&phrases_json).expect("parse json failed");
-    let wade_giles_map: HashMap<String, String> =
-        serde_json::from_str(&wade_giles_json).expect("parse json failed");
+    // 去掉声调
     let no_tone_list: Vec<(String, String)> = tone_map
         .into_iter()
         .map(|(pinyin, pinyin_with_tone)| (pinyin, remove_tone_numbers(&pinyin_with_tone)))
         .collect();
+    // 前缀树
     let mut trie = Trie::new();
-    for (word, pinyin) in data.entries {
+    // 词
+    for (word, pinyin) in phrases_data {
         trie.insert(&word, pinyin);
     }
+    // 分词
     let segments = trie.segment(input);
     let mut flat_pinyin = Vec::new();
-
     for word in segments {
         if let Some(pinyin) = trie.search(&word) {
+            // 按分词找到词映射词
             flat_pinyin.extend(pinyin);
         } else {
+            // 找不到就直接映射字
             for ch in word.chars() {
                 let ch: u32 = ch as u32;
                 if let Some(p) = word_pinyin_map.get(&ch) {

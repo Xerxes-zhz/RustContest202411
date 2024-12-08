@@ -24,6 +24,10 @@ pub fn count_batch(batch: Vec<Province>) -> String {
 }
 
 pub fn count_provinces() -> String {
+    // 实现了Province的结构体的有限状态自动机的json解析
+    // 利用并查集计算数量
+    // union 时根据rank优化
+    // find时自动合并到根优化
     let district_json_path = current_dir().unwrap().join("district.json");
     let json = json_read(district_json_path);
     let batches = Province::from_json_using_fsm(json); // 基于有限状态自动机实现的json解析

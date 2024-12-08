@@ -1,9 +1,9 @@
 use std::alloc::{GlobalAlloc, Layout};
 use std::ptr;
 
-pub struct MiniAllocator;
+pub struct RSMAllocator;
 
-unsafe impl GlobalAlloc for MiniAllocator {
+unsafe impl GlobalAlloc for RSMAllocator {
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
         // 调用自定义堆管理器分配内存
         crate::heap::allocate(layout)

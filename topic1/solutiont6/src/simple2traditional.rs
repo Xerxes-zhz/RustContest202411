@@ -1,31 +1,16 @@
 use std::collections::HashMap;
-use std::fs;
-use std::io::{self, BufRead};
+mod ocd2;
 mod trie;
-use std::env::current_dir;
+use ocd2::load_ocd2_from_current_dir;
 use trie::Trie;
 
-fn load_ocd2_from_current_dir(file_name: &str) -> HashMap<String, Vec<String>> {
-    let file_path = current_dir().unwrap().join(file_name);
-    let file = fs::File::open(file_path).expect("Failed to open file");
-    let reader = io::BufReader::new(file);
-
-    let mut mapping = HashMap::new();
-
-    for line in reader.lines() {
-        let line = line.expect("Failed to read line");
-        let mut parts = line.split_whitespace();
-        if let Some(key) = parts.next() {
-            let values: Vec<String> = parts.map(|s| s.to_string()).collect();
-            mapping.insert(key.to_string(), values);
-        }
-    }
-
-    mapping
-}
 pub fn converter(input: &str, tp: &str) -> String {
-    let mut chars: HashMap<String, Vec<String>>;
-    let mut phrases: HashMap<String, Vec<String>>;
+    // 使用和pinyin相同的前缀树和分词
+    // 分词采用贪婪匹配
+    // 数据来自多个数据合并后的ocd2数据
+
+    let chars: HashMap<String, Vec<String>>;
+    let phrases: HashMap<String, Vec<String>>;
     match tp {
         "t2s" => {
             chars = load_ocd2_from_current_dir("TSCharacters.txt");
