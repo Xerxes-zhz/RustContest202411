@@ -35,7 +35,8 @@ pub fn goldbach_conjecture() -> u64 {
                     if i % 2 == 1 //奇
                         && !squares2
                             .iter()
-                            .any(|&x| x < i && primes.contains(&(i - x)))
+                            .filter(|&&x|x<i)
+                            .any(|&x| primes.contains(&(i - x)))
                     // 有可行解
                     {
                         result.push(i as u64);
@@ -46,9 +47,10 @@ pub fn goldbach_conjecture() -> u64 {
         });
         left_o = right_c + 1;
         right_c *= 2;
-        if result.len() >= 2 {
+        if result.len() >= 3 {
             break;
         }
     }
+    println!("{:?}", result);
     result.iter().take(2).sum::<u64>()
 }
